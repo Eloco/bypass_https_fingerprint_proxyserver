@@ -77,7 +77,7 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             # 将请求内容解码为字符串
 
             proxy = {
-                    "http": "127.0.0.1:7890",
+                "http": "127.0.0.1:7890",
                 "https": "127.0.0.1:7890"
             }
 
