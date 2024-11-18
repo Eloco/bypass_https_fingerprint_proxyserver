@@ -4,7 +4,8 @@
 import http.server
 import socketserver
 from urllib.parse import urlparse
-from curl_cffi import requests
+from curl_cffi import requests as curl_requests
+import requests
 import random
 import ssl
 
@@ -77,8 +78,8 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             # 将请求内容解码为字符串
 
             proxy = {
-                #"http": "127.0.0.1:7890",
-                #"https": "127.0.0.1:7890"
+                # "http": "127.0.0.1:7890",
+                # "https": "127.0.0.1:7890"
             }
 
             headers=dict(headers)
@@ -86,24 +87,37 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 if "Mozilla" not in headers["User-Agent"]:
                     headers["User-Agent"]="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:129.0) Gecko/20100101 Firefox/129.0"
 
+
+
             browsers = [
                 "chrome99", "chrome100", "chrome101", "chrome104", "chrome107", 
                 "chrome110", "chrome116", "chrome119", "chrome120", "chrome123", 
-                "chrome124", "chrome99_android", "edge99", "edge101", "safari15_3", 
-                "safari15_5", "safari17_0", "safari17_2_ios", "safari18_0", "safari18_0_ios"
+                "chrome124", "chrome99_android", "edge99", "edge101", #"safari15_3", 
+                #"safari15_5", "safari17_0", "safari17_2_ios", "safari18_0", "safari18_0_ios"
             ]
             # 随机选择一个元素
             random_browser = random.choice(browsers)
 
             # 使用上游代理发起请求
-            response = requests.request(
-                method=method,
-                url=url,
-                headers=headers,
-                data=data,
-                proxies=proxy,  # 设置代理
-                impersonate=random_browser,
-            )
+            if 'requests_no_cffi' in headers:
+                response = requests.request(
+                    method=method,
+                    url=url,
+                    headers=headers,
+                    data=data,
+                    proxies=proxy,  # 设置代理
+                )
+            else:
+                response = curl_requests.request(
+                    method=method,
+                    url=url,
+                    headers=headers,
+                    data=data,
+                    proxies=proxy,  # 设置代理
+                    impersonate=random_browser,
+                )
+            print(response.status_code)
+            print(response.content)
             return response
 
 
