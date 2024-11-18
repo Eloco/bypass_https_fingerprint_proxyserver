@@ -116,8 +116,8 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     proxies=proxy,  # 设置代理
                     impersonate=random_browser,
                 )
-            print(response.status_code)
-            print(response.content)
+            # print(response.status_code)
+            # print(response.content)
             return response
 
 
