@@ -62,7 +62,7 @@ class ProxyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         headers = "".join(
             f"{k}: {v}\r\n"
             for k, v in response.headers.items()
-            if ("-encoding" not in k.lower()) 
+            if ("-encoding" not in k.lower() and "content-length" not in k.lower()) 
         )
         headers += f"Content-Length: {len(decoded_body)}\r\n"
         # 拼接完整的响应
